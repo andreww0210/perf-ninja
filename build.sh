@@ -1,9 +1,44 @@
-#! /bin/bash
+#!/bin/bash
 
-cmake -E rm -rf build
-cmake -E make_directory build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Debug .. -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" ..
-cmake --build . --config Debug --parallel 8
-cmake --build . --target validateLab
-cmake --build . --target benchmarkLab
+set -e
+
+build_validate=false
+build_benchmark=false
+
+for arg in "$@"; do
+  case $arg in
+    --validate)
+      build_validate=true
+      ;;
+    --benchmark)
+      build_benchmark=true
+      ;;
+    --help|-h)
+      echo "usage: $0 [--validate] [--benchmark]"
+      echo "  --validate    validateLab"
+      echo "  --benchmark   benchmarkLab"
+      exit 0
+      ;;
+  esac
+done
+
+BUILD_DIR="build"
+
+cmake -E rm -rf "$BUILD_DIR"
+cmake -E make_directory "$BUILD_DIR"
+
+# 使用子 shell (...) 来执行编译，这样就不会改变你当前终端的路径
+(
+  cd "$BUILD_DIR"
+
+  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" ..
+  cmake --build . --config Debug --parallel 8
+
+  if [ "$build_validate" = true ]; then
+    cmake --build . --target validateLab
+  fi
+
+  if [ "$build_benchmark" = true ]; then
+    cmake --build . --target benchmarkLab
+  fi
+)
