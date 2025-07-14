@@ -7,16 +7,16 @@ build_benchmark=false
 
 for arg in "$@"; do
   case $arg in
-    --validate)
+    --validate|-v)
       build_validate=true
       ;;
-    --benchmark)
+    --benchmark|-b)
       build_benchmark=true
       ;;
     --help|-h)
-      echo "usage: $0 [--validate] [--benchmark]"
-      echo "  --validate    validateLab"
-      echo "  --benchmark   benchmarkLab"
+      echo "usage: $0 [--validate/-v] [--benchmark/-b]"
+      echo "  --validate/-v    validateLab"
+      echo "  --benchmark/-b   benchmarkLab"
       exit 0
       ;;
   esac
