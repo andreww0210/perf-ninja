@@ -31,8 +31,8 @@ cmake -E make_directory "$BUILD_DIR"
 (
   cd "$BUILD_DIR"
 
-  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" ..
-  cmake --build . --config Debug --parallel 8
+  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" ..
+  cmake --build . --config Release --parallel 8
 
   if [ "$build_validate" = true ]; then
     cmake --build . --target validateLab
