@@ -30,7 +30,7 @@ unsigned solution(const std::string &inputContents) {
   int i = 0;
   // Stores the length of a line segment that carries over from the preLineLength chunk.
   int preLineLength = 0;
-  for (; i + 16 < inputContents.size(); i += 16) {
+  for (; i + 15 < inputContents.size(); i += 16) {
     // Load 16 characters (unaligned) from the input string into a 128-bit SIMD register.
     __m128i charV = _mm_loadu_si128((const __m128i *)(inputAddr + i));
     // Create a 128-bit vector where all 16 bytes are the newline character ('\n').
