@@ -10,7 +10,7 @@ Position<std::uint32_t> solution(std::vector<Position<std::uint32_t>> const &inp
   std::uint64_t y = 0;
   std::uint64_t z = 0;
 
-  #ifdef ORIGIN
+  #if defined(ORIGIN)
   // Origin version:
   // This can be vectorized on new x86 core by using `vpermt2d`.
   for (auto pos: input) {
@@ -18,9 +18,8 @@ Position<std::uint32_t> solution(std::vector<Position<std::uint32_t>> const &inp
     y += pos.y;
     z += pos.z;
   }
-  #endif
 
-  #ifdef SOA
+  #elif defined(SOA)
   // AoS -> SoA version. But not good.
   struct SoA {
     std::vector<std::uint32_t> vector_x;
@@ -46,9 +45,8 @@ Position<std::uint32_t> solution(std::vector<Position<std::uint32_t>> const &inp
     y += soa.vector_y[i];
     z += soa.vector_z[i];
   }
-  #endif
 
-  #ifdef MY_SIMD
+  #elif defined(MY_SIMD)
   // I wrote a SIMD version myself.
   // It's not very good, but the logic is correct.
   int i = 0;
@@ -93,8 +91,8 @@ Position<std::uint32_t> solution(std::vector<Position<std::uint32_t>> const &inp
   x = acc_x;
   y = acc_y;
   z = acc_z;
-  #endif
 
+  #else
   int i = 0;
   const __m128i *intputStr = reinterpret_cast<const __m128i *>(&input[0].x);
   __m256i sum_xyzx = _mm256_setzero_si256();
@@ -141,6 +139,7 @@ Position<std::uint32_t> solution(std::vector<Position<std::uint32_t>> const &inp
     y += input[i].y;
     z += input[i].z;
   }
+  #endif
 
   return {
           static_cast<std::uint32_t>(x / std::max<std::uint64_t>(1, input.size())),
